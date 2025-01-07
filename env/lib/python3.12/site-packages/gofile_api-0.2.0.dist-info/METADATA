@@ -1,0 +1,68 @@
+Metadata-Version: 2.1
+Name: gofile-api
+Version: 0.2.0
+Summary: A python library for communicating with the Gofile API.
+Home-page: https://github.com/objectiveSquid/GoFile-API
+Author: Magnus Zahle
+Author-email: objectivesquid@outlook.com
+License: MIT
+Keywords: python,gofile,api,gofileio,gofile.io
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Natural Language :: English
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+
+# GoFile API
+### Description
+A python library for communicating with the Gofile API.
+
+### Features
+Get an available server. <br>
+Upload a file. <br>
+Create a guest account. <br>
+Get contents of a folder. <br>
+Create a folder. <br>
+Get the account information. <br>
+Set option for a content id. This can be a password, whether the content should be public, the content description, <br> and expiration date, tags, or  <br>
+Delete files and/or folders.
+
+
+# Changelog
+
+## 0.0.1
+First upload
+
+## 0.0.2
+Added more documentation
+
+## 0.0.3
+Fixed long description on PyPi
+
+## 0.0.4
+Fixed long description on PyPi, again <br>
+Added documentation for all functions, and improved existing documentation <br>
+Fixed GoFileSession.upload_file
+
+## 0.0.5
+Another try at making the actual imports work
+
+## 0.0.6
+Last try at making the actual imports work before I jump off a balcony
+
+## 0.0.7
+Importing the package now works
+
+## 0.1.0 First full and stable release!
+Added uploading a file with options <br>
+Added proper exception and response handling <br>
+License file included with PyPi repository <br>
+Added function to delete content <br>
+Fixed a few broken functions
+
+## 0.2.0
+Importing the package broke, fixed it
+Imported exceptions in __init__.py

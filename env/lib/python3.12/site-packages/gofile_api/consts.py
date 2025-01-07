@@ -1,0 +1,6 @@
+WRONG_OWNER = "error-owner"
+PASSWORD_REQUIRED = "error-passwordRequired"
+WRONG_PASSWORD = "error-passwordWrong"
+WRONG_FOLDER = "error-wrongFolder"
+ERROR_EXPIRE = "error-expire"
+ERROR_NOT_FOUND = "error-notFound"

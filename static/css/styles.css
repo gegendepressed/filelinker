@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #101820;
+    color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+h1 {
+    color: #f2aa4c;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+form {
+    background-color: #1b2936;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+    border: 2px solid #f2aa4c;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #f2aa4c;
+    text-align: center;
+}
+
+form input[type="file"],
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #f2aa4c;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #f9f9f9;
+    background-color: #101820;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    background-color: #f2aa4c;
+    color: #101820;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+form input[type="submit"]:hover {
+    background-color: #e0893f;
+}
+
+h3 {
+    color: #f2aa4c;
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+
+a {
+    color: #f2aa4c;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #721c24;
+    color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+ul li {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+ul li::before {
+    content: "⚠️ ";
+    margin-right: 10px;
+    font-size: 1.5rem;
+}

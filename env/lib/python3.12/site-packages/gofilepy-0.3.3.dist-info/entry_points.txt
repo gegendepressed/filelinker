@@ -1,0 +1,4 @@
+[console_scripts]
+gofile=gofilepy:gofile.main
+gofilepy=gofilepy:gofile.main
+
