@@ -4,13 +4,11 @@ from gofilepy import GofileClient
 import requests
 import re
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-SECRET_PASSWORD = os.getenv('SECRET_PASSWORD')
 
 app = Flask(__name__)
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 url = "https://spoo.me"
 headers = {
@@ -18,9 +16,7 @@ headers = {
     "Content-Type": "application/x-www-form-urlencoded"
 }
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-
-app.config['SECRET_KEY'] = 'your_secret_key'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','docx','csv'}
 
 client = GofileClient()
 
@@ -70,27 +66,20 @@ def upload_file():
                 payload = {
                     "url": page_link,
                     "alias": short_name,
-                    "max-clicks": 50,
-                    "password": password if password else SECRET_PASSWORD,
                 }
+            if password:
+                    payload["password"] = password
 
-                response = requests.post(url, data=payload, headers=headers)
+            response = requests.post(url, data=payload, headers=headers)
 
-                if response.status_code == 200:
-                    shortened_url = response.json().get('short_url')
-                else:
-                    flash(f"Choose a different name for the URL.")
+            if response.status_code == 200:
+                shortened_url = response.json().get('short_url')
+            else:
+                flash(f"Choose a different name for the URL.")
 
-            return render_template('upload.html', shortened_url=shortened_url)
+        return render_template('upload.html', shortened_url=shortened_url)
 
     return render_template('upload.html')
-
-def handler(request):
-    from werkzeug.middleware.dispatcher import DispatcherMiddleware
-    from werkzeug.serving import run_simple
-
-    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {'/': app})
-    return app(request.environ, request.start_response)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

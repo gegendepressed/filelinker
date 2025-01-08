@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload and Shorten URL</title>
+    <title>FileLinker - Custom File URLs</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Upload File and Get a Shortened URL</h1>
+    <h1>FileLinker - Custom File URLs </h1>
 
     <form id="form" method="POST" enctype="multipart/form-data">
         <label for="file"> Upload a file </label>
@@ -19,13 +20,13 @@
         <br><br>
 
         <label for="password"> Password  </label>
-        <input type="password" name="password" placeholder="Enter password">
+        <input type="password" name="password" placeholder="Optional to enter the password.">
         <br><br>
 
         <small class="password-tip">Password must be at least 8 characters long and contain a letter, a number, and a special character like @ or .</small>
         <br><br>
 
-        <input type="submit" value=" Upload File">
+        <input type="submit" value=" Upload File">  
     </form>
 
     {% if shortened_url %}
@@ -46,6 +47,10 @@
         {% endif %}
     {% endwith %}
 
+
+    <footer>
+        <h5 style="text-align: center; font-size: 14px; color: white;"> Made by <a href="https://github.com/gegendepressed"> Sairaj Pai </a> </h5>
+    </footer>
     <script>
         function clearForm() {
             document.getElementById("form").reset();
