@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileLinker - Custom File URLs</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>FileLinker - Custom File URLs </h1>
+
+    <form id="form" method="POST" enctype="multipart/form-data">
+        <label for="file"> Upload a file </label>
+        <input type="file" name="file" required>
+        <br><br>
+
+        <label for="short_name"> URL Name </label>
+        <input type="text" name="short_name" placeholder="Enter custom alias">
+        <br><br>
+
+        <label for="password"> Password  </label>
+        <input type="password" name="password" placeholder="Optional to enter the password.">
+        <br><br>
+
+        <small class="password-tip">Password must be at least 8 characters long and contain a letter, a number, and a special character like @ or .</small>
+        <br><br>
+
+        <input type="submit" value=" Upload File">  
+    </form>
+
+    {% if shortened_url %}
+        <div class="shortened-url-container">
+            <h3>Shortened URL</h3>
+            <p><a href="{{ shortened_url }}" target="_blank">{{ shortened_url }}</a></p>
+        </div>
+    {% endif %}
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+
+    <footer>
+        <h5 style="text-align: center; font-size: 14px; color: white;"> Made by <a href="https://github.com/gegendepressed"> Sairaj Pai </a> </h5>
+    </footer>
+    <script>
+        function clearForm() {
+            document.getElementById("form").reset();
+        }
+    </script>
+</body>
+</html>

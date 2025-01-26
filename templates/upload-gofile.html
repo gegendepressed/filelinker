@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Upload Files</h2>
+<form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        <label for="file">Files</label>
+        {{ form.file(class="form-control-file", multiple=True) }}
+    </div>
+    <div class="form-group">
+        <label for="short_name">Custom URL Name</label>
+        {{ form.short_name(class="form-control", placeholder="Enter custom alias") }}
+    </div>
+    <div class="form-group">
+        <label for="password">Password (Optional)</label>
+        {{ form.password(class="form-control", placeholder="Enter password to protect the file") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Upload Files</button>
+</form>
+
+<br> <br>
+
+{% if shortened_url %}
+    <div class="mt-4">
+        <h4>Your Shortened URL</h4>
+        <p><a href="{{ shortened_url }}" target="_blank">{{ shortened_url }}</a></p>
+    </div>
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="alert alert-warning">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% endblock %}

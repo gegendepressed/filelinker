@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>Welcome to your Dashboard, {{ user.fullname }}!</h1>
+
+    <div class="mt-4">
+      <h3>Your Uploaded Files</h3>
+      {% if files %}
+        <ul class="list-group">
+          {% for file in files %}
+            <li class="list-group-item">
+              <p><strong>Shortened URL:</strong> <a href="{{ file.shortened_url }}" target="_blank">{{ file.shortened_url }}</a></p>
+              <p><strong>Uploaded on:</strong> {{ file.timestamp|date }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+        
+        <!-- Pagination Controls -->
+        <nav aria-label="Page navigation" class="mt-4">
+          <ul class="pagination justify-content-center">
+            {% if pagination.has_prev %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('dashboard', page=pagination.prev_num) }}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo; Previous</span>
+                </a>
+              </li>
+            {% endif %}
+            
+            <li class="page-item disabled">
+              <span class="page-link">{{ pagination.page }} ... {{ pagination.pages }}</span>
+            </li>
+            
+            {% if pagination.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('dashboard', page=pagination.next_num) }}" aria-label="Next">
+                  <span aria-hidden="true">Next &raquo;</span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% else %}
+        <p>You haven't uploaded any files yet.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
