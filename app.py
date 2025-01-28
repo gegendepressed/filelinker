@@ -13,7 +13,7 @@ from datetime import datetime
 from pytz import timezone
 import zipfile
 from io import BytesIO
-import os
+import os, re
 from dotenv import load_dotenv
 
 
@@ -86,7 +86,7 @@ def login():
             login_user(user, remember=form.remember.data)
             flash('You have been logged in!', 'success')
             next = request.args.get('next')
-            return redirect(next or url_for('upload'))
+            return redirect(next or url_for('dashboard'))
         else:
             flash("Login Unsuccessful, Please check Username and Password", "danger")
     return render_template('login.html', form=form)
@@ -95,21 +95,43 @@ def login():
 def upload():
     return render_template('upload.html')
 
+def is_valid_password(password):
+    if len(password) < 8:
+        return False
+    if not re.search(r'[a-zA-Z]', password):  
+        return False
+    if not re.search(r'\d', password):  
+        return False
+    if not re.search(r'[@.]', password):  
+        return False
+    if re.search(r'[@.]{2,}', password):  
+        return False
+    return True
+
 @app.route('/gofile', methods=['GET', 'POST'])
 def uploadgofile():
     form = UploadForm()
+    shortened_url = None
+    page_link = None
+
     if form.validate_on_submit():
         timestamp = int(time.time())
         short_name = form.short_name.data
         password = form.password.data
         files = request.files.getlist('file')
 
+        # Check if files are selected
         if not files or len(files) == 0:
             flash("No files selected for upload.", "danger")
-            return render_template('upload.html', form=form)
+            return render_template('upload-gofile.html', form=form)
 
+        # Validate the password if provided
+        if password and not is_valid_password(password):
+            flash("Password must be at least 8 characters long, contain a letter, a number, and a special character (@ or .), and not have consecutive special characters.")
+            return render_template('upload-gofile.html', form=form)
+
+        # Handle multiple file upload as a ZIP
         if len(files) > 1:
-            # Package files into a ZIP archive
             zip_buffer = BytesIO()
             with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
                 for file in files:
@@ -121,16 +143,21 @@ def uploadgofile():
         else:
             # Handle single file upload
             file = files[0]
-            if not file:
-                flash("Invalid file.", "danger")
-                return render_template('upload.html', form=form)
+            if file.filename == '':
+                flash('No file selected.', 'danger')
+                return render_template('upload-gofile.html', form=form)
+
             upload_file = file.stream
 
-        # Upload the file (ZIP or single) to Gofile
-        gofile_response = client.upload(file=upload_file)
-        page_link = gofile_response.page_link
+        # Upload the file to Gofile
+        try:
+            gofile_response = client.upload(file=upload_file)
+            page_link = gofile_response.page_link
+        except Exception as e:
+            flash(f"Error uploading file: {str(e)}", "danger")
+            return render_template('upload-gofile.html', form=form)
 
-        shortened_url = None
+        # Shorten the URL if a custom alias is provided
         if short_name:
             payload = {
                 "url": page_link,
@@ -139,40 +166,69 @@ def uploadgofile():
             if password:
                 payload["password"] = password
 
-            # Request the shortened URL
-            response = requests.post(url, data=payload, headers=headers)
+            try:
+                response = requests.post(url, data=payload, headers=headers)
+                if response.status_code == 200:
+                    shortened_url = response.json().get('short_url')
+                else:
+                    flash("Error creating shortened URL. Please try a different name.", "danger")
+            except Exception as e:
+                flash(f"Error shortening URL: {str(e)}", "danger")
 
-            if response.status_code == 200:
-                shortened_url = response.json().get('short_url')
-            else:
-                flash("Error creating shortened URL. Please try a different name.")
-
-        # Check if the user is authenticated
+        # Save the URL details to the database if the user is authenticated
         if current_user.is_authenticated:
-            # Store the URL in the database for authenticated users
-            file_url = FileURL(url=page_link, shortened_url=shortened_url, timestamp=timestamp, user_id=current_user.username)
+            file_url = FileURL(
+                url=page_link,
+                shortened_url=shortened_url,
+                timestamp=timestamp,
+                user_id=current_user.username
+            )
             db.session.add(file_url)
             db.session.commit()
 
         flash('File uploaded and URL created successfully!', 'success')
-        return render_template('upload-gofile.html', form=form, shortened_url=shortened_url)
+        return render_template('upload-gofile.html', form=form, shortened_url=shortened_url, page_link=page_link)
 
     return render_template('upload-gofile.html', form=form)
-
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
     user = current_user
     current_page = request.args.get('page', 1, type=int)
-    query = db.select(FileURL).where(FileURL.user_id == user.username).order_by(desc(FileURL.timestamp))
-    user_files = db.paginate(query, page = current_page, per_page=10)
-    page_list = user_files.iter_pages(left_edge=1,right_edge=1, left_current=2, right_current=2)
-
-    if not user_files:
-        flash("You have not uploaded any files yet.", "info")
     
-    return render_template('dashboard.html', user=user, current_page=current_page, files=user_files, pagination=page_list)
+    # Query files for the current user and paginate
+    user_files = (
+        db.session.query(FileURL)
+        .filter(FileURL.user_id == user.username)
+        .order_by(FileURL.timestamp.desc())
+        .paginate(page=current_page, per_page=10)
+    )
+    
+    return render_template(
+        'dashboard.html',
+        user=user,
+        files=user_files,
+        pagination=user_files
+    )
+
+@app.route('/delete/<int:file_id>', methods=['POST'])
+@login_required
+def delete_file(file_id):
+    # Query the file by ID
+    file = db.session.execute(db.select(FileURL).where(FileURL.id == file_id, FileURL.user_id == current_user.username)).scalar_one_or_none()
+
+    if not file:
+        flash("File not found or access denied.", "danger")
+        return redirect(url_for('dashboard'))
+
+    # Delete the file record from the database
+    db.session.delete(file)
+    db.session.commit()
+
+    flash("File deleted successfully.", "success")
+    return redirect(url_for('dashboard'))
+
 
 @app.route('/logout')
 def logout():

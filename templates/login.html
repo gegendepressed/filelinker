@@ -18,4 +18,15 @@
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 </form>
+
+<br>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="alert alert-warning">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 {% endblock %}

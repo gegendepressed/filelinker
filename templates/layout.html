@@ -7,33 +7,34 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body class="{% if current_theme == 'light' %}light-mode{% else %}dark-mode{% endif %}"></body>
+<body class="{% if current_theme == 'light' %}light-mode{% else %}dark-mode{% endif %}">
     <nav id="navbar" class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <!-- Replace text with an image for the brand -->
             <a class="navbar-brand" href="{{ url_for('home') }}">
-                <img src="{{ url_for('static', filename='images/brand.svg') }}" alt="FileLinker Logo" style="width: 35px; margin-right: 5px;"> FileLinker
+                <img id="brandLogo" 
+                     src="{{ url_for('static', filename='images/brand-light.svg') }}" 
+                     alt="FileLinker Logo" 
+                     style="width: 35px; margin-right: 5px;"> 
+                FileLinker
             </a>
             
             <div class="ml-auto d-flex align-items-center">
-            {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('register') }}">Getting Started!</a>
-                <a href="{{ url_for('login') }}">Login</a>
-                <!-- Add sun and moon SVG icons here -->
-                <button id="toggleMode" class="theme-toggle-btn">
-                    <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
-                    <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
-                </button>
-            {% else %}
-                <a href="{{ url_for('dashboard') }}">Account</a>
-                <a href="{{ url_for('upload') }}">Upload File</a>
-                <!-- Add sun and moon SVG icons here -->
-                <button id="toggleMode" class="theme-toggle-btn">
-                    <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
-                    <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
-                </button>
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% endif %}
+                {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('register') }}">Getting Started!</a>
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <button id="toggleMode" class="theme-toggle-btn">
+                        <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
+                        <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
+                    </button>
+                {% else %}
+                    <a href="{{ url_for('dashboard') }}">Account</a>
+                    <a href="{{ url_for('upload') }}">Upload File</a>
+                    <button id="toggleMode" class="theme-toggle-btn">
+                        <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
+                        <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
+                    </button>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -48,37 +49,6 @@
         </div>
     </footer>
 
-    <script>
-        const toggleButton = document.getElementById('toggleMode');
-        const body = document.body;
-        const navbar = document.getElementById('navbar');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
-
-        toggleButton.addEventListener('click', function () {
-            const isDarkMode = body.classList.toggle('dark-mode');
-            navbar.classList.toggle('dark-mode');
-            toggleButton.classList.toggle('dark-mode');
-            
-            // Toggle the visibility of sun and moon icons
-            sunIcon.style.display = isDarkMode ? 'block' : 'none';
-            moonIcon.style.display = isDarkMode ? 'none' : 'block';
-
-            // Optionally save mode preference in localStorage
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-
-        // On page load, apply the saved theme
-        window.addEventListener('DOMContentLoaded', function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                body.classList.add('dark-mode');
-                navbar.classList.add('dark-mode');
-                toggleButton.classList.add('dark-mode');
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
