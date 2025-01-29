@@ -16,7 +16,7 @@
               </div>
               <form method="POST" action="{{ url_for('delete_file', file_id=file.id) }}" class="ml-4">
                 <button type="submit" class="btn btn-danger btn-sm">
-                  <img src="{{ url_for('static', filename='delete-icon.png') }}" alt="Delete" style="width: 20px; height: 20px;">
+                  <img src="{{ url_for('static', filename='images/delete.svg') }}" style="width: 20px; height: 20px;">
                 </button>
               </form>
             </li>
@@ -50,4 +50,16 @@
       {% endif %}
     </div>
   </div>
+
+  <br>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="alert alert-warning">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 {% endblock %}
