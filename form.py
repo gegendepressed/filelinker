@@ -19,8 +19,8 @@ class LoginForm(FlaskForm):
 
 
 class UploadForm(FlaskForm):
-    title=StringField('Title',validators=[DataRequired(),Length(max=100)])
-    message = TextAreaField("Message", validators=[DataRequired(), Length(max=1000)])
+    title=StringField('Title',validators=[Length(max=100)])
+    message = TextAreaField("Message", validators=[Length(max=1000)])
     file = FileField('Upload a File', validators=[DataRequired()], render_kw={'multiple': True})
     short_name = StringField('URL Name', validators=[DataRequired()])
     password = PasswordField('Password (Optional)')

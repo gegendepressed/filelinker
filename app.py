@@ -143,12 +143,14 @@ def uploadgofile():
     page_link = None
 
     if form.validate_on_submit():
+        title = form.title.data if current_user.is_authenticated else None
+        message = form.message.data if current_user.is_authenticated else None
+
         timestamp = int(time.time())
         short_name = form.short_name.data
         password = form.password.data
-        files = request.files.getlist('file.zip')
+        files = request.files.getlist('file')
 
-        # Check if files are selected
         if not files or len(files) == 0:
             flash("No files selected for upload.", "danger")
             return render_template('upload-gofile.html', form=form)
@@ -169,15 +171,11 @@ def uploadgofile():
             zip_buffer.seek(0)
             upload_file = zip_buffer
         else:
-            # Handle single file upload
             file = files[0]
-
-    
+            upload_file = file.stream
         if file.filename == '':
             flash('No file selected.', 'danger')
             return render_template('upload-gofile.html', form=form)
-
-        upload_file = file.stream
 
         try:
             gofile_response = client.upload(file=upload_file)
@@ -206,6 +204,8 @@ def uploadgofile():
 
         if current_user.is_authenticated:
             file_url = FileURL(
+                title=title,
+                message=message,
                 url=page_link,
                 shortened_url=shortened_url,
                 timestamp=timestamp,
@@ -218,6 +218,7 @@ def uploadgofile():
         return render_template('upload-gofile.html', form=form, shortened_url=shortened_url, page_link=page_link)
 
     return render_template('upload-gofile.html', form=form)
+
 
 @app.route("/dashboard")
 @login_required
@@ -269,7 +270,6 @@ def delete_file(item_id):
     if not file and not message:
         flash("Item not found or access denied.", "danger")
         return redirect(url_for('dashboard'))
-
 
     if file:
         db.session.delete(file)

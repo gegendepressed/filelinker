@@ -4,10 +4,23 @@
 <h2>Upload Files</h2>
 <form method="POST" action="{{ url_for('uploadgofile') }}" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
+    
     <div class="form-group">
         <label for="file">Files</label>
         {{ form.file(class="form-control-file", multiple=True) }}
     </div>
+
+    {% if current_user.is_authenticated %}
+        <div class="form-group">
+            <label for="title">Title</label>
+            {{ form.title(class="form-control", placeholder="Enter title") }}
+        </div>
+        <div class="form-group">
+            <label for="message">Message</label>
+            {{ form.message(class="form-control", placeholder="Enter message") }}
+        </div>
+    {% endif %}
+
     <div class="form-group">
         <label for="short_name">Custom URL Name</label>
         {{ form.short_name(class="form-control", placeholder="Enter custom alias") }}
@@ -16,6 +29,7 @@
         <label for="password">Password (Optional)</label>
         {{ form.password(class="form-control", placeholder="Enter password to protect the file") }}
     </div>
+
     <button type="submit" class="btn upload-btn btn-primary">Upload Files</button>
 </form>
 
