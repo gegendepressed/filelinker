@@ -6,7 +6,7 @@
 
     <div class="mt-4">
       {% if files.items %}
-        <h3>Your Uploaded Files</h3>
+        <h3> Files and Writeups</h3>
         <ul class="list-group">
           {% for file in files.items %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -14,7 +14,7 @@
                 <p><strong>Shortened URL:</strong> <a href="{{ file.shortened_url }}" target="_blank">{{ file.shortened_url }}</a></p>
                 <p><strong>Uploaded on:</strong> {{ file.timestamp|date }}</p>
               </div>
-              <form method="POST" action="{{ url_for('delete_file', file_id=file.id) }}" class="ml-4">
+              <form method="POST" action="{{ url_for('delete_file', item_id=file.id) }}" class="ml-4">
                 <button type="submit" class="btn btn-danger btn-sm">
                   <img src="{{ url_for('static', filename='images/delete.svg') }}" style="width: 20px; height: 20px;">
                 </button>
@@ -22,32 +22,49 @@
             </li>
           {% endfor %}
         </ul>
-
-        <!-- Pagination Controls -->
-        <nav aria-label="Page navigation" class="mt-4">
-          <ul class="pagination justify-content-center">
-            {% if files.has_prev %}
-              <li class="page-item">
-                <a class="page-link" href="{{ url_for('dashboard', page=files.prev_num) }}" aria-label="Previous">
-                  <span aria-hidden="true">&laquo; Previous</span>
-                </a>
-              </li>
-            {% endif %}
-            <li class="page-item disabled">
-              <span class="page-link">Page {{ files.page }} of {{ files.pages }}</span>
-            </li>
-            {% if files.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="{{ url_for('dashboard', page=files.next_num) }}" aria-label="Next">
-                  <span aria-hidden="true">Next &raquo;</span>
-                </a>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>
       {% else %}
         <h3>You haven't uploaded any files yet.</h3>
       {% endif %}
+
+      <h3 class="mt-4">Messages</h3>
+      <ul class="list-group">
+        {% for message in messages.items %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <p><strong>Title:</strong> <a href="{{ url_for('view_message', message_id=message.id) }}">{{ message.title }}</a></p>
+              <p><strong>Content:</strong> {{ message.message[:40] }}{% if message.message|length > 40 %}...{% endif %}</p>
+            </div>
+            <form method="POST" action="{{ url_for('delete_file', item_id=message.id) }}" class="ml-4">
+              <button type="submit" class="btn btn-danger btn-sm">
+                <img src="{{ url_for('static', filename='images/delete.svg') }}" style="width: 20px; height: 20px;">
+              </button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <!-- Pagination Controls -->
+      <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if files.has_prev %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('dashboard', page=files.prev_num) }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo; Previous</span>
+              </a>
+            </li>
+          {% endif %}
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ files.page }} of {{ files.pages }}</span>
+          </li>
+          {% if files.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('dashboard', page=files.next_num) }}" aria-label="Next">
+                <span aria-hidden="true">Next &raquo;</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
   </div>
 
@@ -61,5 +78,5 @@
             {% endfor %}
         </ul>
     {% endif %}
-{% endwith %}
+  {% endwith %}
 {% endblock %}

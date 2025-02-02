@@ -1,27 +1,26 @@
 import time
 from flask import Flask, flash, render_template, redirect, request, url_for
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 import hashlib
 from werkzeug.utils import secure_filename
 from gofilepy import GofileClient
 import requests
-from form import RegistrationForm, LoginForm, UploadForm
+from form import RegistrationForm, LoginForm, UploadForm, MessageForm
 from models import *
 from sqlalchemy import *
 from datetime import datetime
 from pytz import timezone
 import zipfile
 from io import BytesIO
-import os, re
+import os, re, secrets
+from fileupload import upload_image,delete_image
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_default_secret_key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI') or os
 tz = timezone("Asia/Kolkata")
 
 db.init_app(app)
@@ -38,6 +37,19 @@ def load_user(user_id):
 @app.template_filter('date')
 def format_date(timestamp, fmt="%d-%m-%y %H:%M"):
     return datetime.fromtimestamp(timestamp, tz).strftime(fmt)
+
+def is_valid_password(password):
+    if len(password) < 8:
+        return False
+    if not re.search(r'[a-zA-Z]', password):  
+        return False
+    if not re.search(r'\d', password):  
+        return False
+    if not re.search(r'[@.]', password):  
+        return False
+    if re.search(r'[@.]{2,}', password):  
+        return False
+    return True
 
 client = GofileClient()
 
@@ -91,22 +103,38 @@ def login():
             flash("Login Unsuccessful, Please check Username and Password", "danger")
     return render_template('login.html', form=form)
 
+@app.route('/writeup', methods=['GET', 'POST'])
+@login_required
+def message():
+    form = MessageForm()
+    image = None
+
+    if form.validate_on_submit():
+        if form.image.data:  
+            image = form.image.data
+            randomhex = secrets.token_hex(10)
+            image = upload_image(image, f"{current_user.username}_post_{randomhex}")
+
+        message = Message(
+            title=form.title.data,
+            message=form.message.data,
+            user_id=current_user.username,
+            image=image,
+            timestamp=int(time.time()),
+            shareable_msg=form.shareable_msg.data
+        )
+
+        db.session.add(message)
+        db.session.commit()
+        
+        flash("Message posted successfully!", "success")
+        return redirect(url_for("message"))
+
+    return render_template('message.html', form=form, image=image)
+
 @app.route('/upload',methods=['GET',"POST"])
 def upload():
     return render_template('upload.html')
-
-def is_valid_password(password):
-    if len(password) < 8:
-        return False
-    if not re.search(r'[a-zA-Z]', password):  
-        return False
-    if not re.search(r'\d', password):  
-        return False
-    if not re.search(r'[@.]', password):  
-        return False
-    if re.search(r'[@.]{2,}', password):  
-        return False
-    return True
 
 @app.route('/gofile', methods=['GET', 'POST'])
 def uploadgofile():
@@ -118,7 +146,7 @@ def uploadgofile():
         timestamp = int(time.time())
         short_name = form.short_name.data
         password = form.password.data
-        files = request.files.getlist('file')
+        files = request.files.getlist('file.zip')
 
         # Check if files are selected
         if not files or len(files) == 0:
@@ -143,13 +171,14 @@ def uploadgofile():
         else:
             # Handle single file upload
             file = files[0]
-            if file.filename == '':
-                flash('No file selected.', 'danger')
-                return render_template('upload-gofile.html', form=form)
 
-            upload_file = file.stream
+    
+        if file.filename == '':
+            flash('No file selected.', 'danger')
+            return render_template('upload-gofile.html', form=form)
 
-        # Upload the file to Gofile
+        upload_file = file.stream
+
         try:
             gofile_response = client.upload(file=upload_file)
             page_link = gofile_response.page_link
@@ -175,7 +204,6 @@ def uploadgofile():
             except Exception as e:
                 flash(f"Error shortening URL: {str(e)}", "danger")
 
-        # Save the URL details to the database if the user is authenticated
         if current_user.is_authenticated:
             file_url = FileURL(
                 url=page_link,
@@ -197,11 +225,17 @@ def dashboard():
     user = current_user
     current_page = request.args.get('page', 1, type=int)
     
-    # Query files for the current user and paginate
     user_files = (
         db.session.query(FileURL)
         .filter(FileURL.user_id == user.username)
         .order_by(FileURL.timestamp.desc())
+        .paginate(page=current_page, per_page=10)
+    )
+
+    user_messages = (
+        db.session.query(Message)
+        .filter(Message.user_id == user.username)
+        .order_by(Message.timestamp.desc())
         .paginate(page=current_page, per_page=10)
     )
     
@@ -209,25 +243,48 @@ def dashboard():
         'dashboard.html',
         user=user,
         files=user_files,
-        pagination=user_files
+        messages=user_messages,
+        pagination=user_messages
     )
 
-@app.route('/delete/<int:file_id>', methods=['POST'])
-@login_required
-def delete_file(file_id):
-    # Query the file by ID
-    file = db.session.execute(db.select(FileURL).where(FileURL.id == file_id, FileURL.user_id == current_user.username)).scalar_one_or_none()
-
-    if not file:
-        flash("File not found or access denied.", "danger")
+@app.route('/writeup/<int:message_id>')
+def view_message(message_id):
+    message = db.session.execute(db.select(Message).where(Message.id == message_id)).scalar_one_or_none()  # Add parentheses here
+    if not message:
+        flash("Message not found.", "danger")
         return redirect(url_for('dashboard'))
 
-    # Delete the file record from the database
-    db.session.delete(file)
-    db.session.commit()
+    if not message.shareable_msg and not current_user.is_authenticated:
+        flash("You cannot view this message as it is not shared by the user.", "danger")
+        return redirect(url_for('login'))
 
-    flash("File deleted successfully.", "success")
+    return render_template('view_message.html', message=message)
+
+@app.route('/delete/<int:item_id>', methods=['POST'])
+@login_required
+def delete_file(item_id):
+    file = db.session.execute(db.select(FileURL).where(FileURL.id == item_id, FileURL.user_id == current_user.username)).scalar_one_or_none()
+    message = db.session.execute(db.select(Message).where(Message.id == item_id, Message.user_id == current_user.username)).scalar_one_or_none()
+
+    if not file and not message:
+        flash("Item not found or access denied.", "danger")
+        return redirect(url_for('dashboard'))
+
+
+    if file:
+        db.session.delete(file)
+
+    if message:
+        if message.image:
+            image_id = message.image.split("/")[-1]
+            delete_image(image_id)
+        db.session.delete(message)
+
+
+        db.session.commit()
+    flash("File/Message deleted successfully.", "success")
     return redirect(url_for('dashboard'))
+
 
 
 @app.route('/logout')

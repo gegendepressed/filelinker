@@ -22,6 +22,7 @@
                 {% if not current_user.is_authenticated %}
                     <a href="{{ url_for('register') }}">Getting Started!</a>
                     <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('upload') }}">Upload File</a>
                     <button id="toggleMode" class="theme-toggle-btn">
                         <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
                         <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
@@ -29,6 +30,7 @@
                 {% else %}
                     <a href="{{ url_for('dashboard') }}">Account</a>
                     <a href="{{ url_for('upload') }}">Upload File</a>
+                    <a href="{{ url_for('message') }}">Writeup</a>
                     <button id="toggleMode" class="theme-toggle-btn">
                         <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
                         <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">

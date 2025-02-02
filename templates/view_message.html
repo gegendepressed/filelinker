@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>{{ message.title }}</h1>
+
+    <p><strong>Posted on:</strong> {{ message.timestamp|date }}</p>
+    
+    {% if message.image %}
+      <div class="mt-3">
+        <h5>Image:</h5>
+        <img src="{{ message.image }}" alt="Message Image" class="img-fluid">
+      </div>
+    {% endif %}
+
+    <div class="mt-3">
+      <p><strong>Message:</strong></p>
+      <p>{{ message.message }}</p>
+    </div>
+
+    {% if message.shareable_msg%}
+      <div class="mt-3">
+        <p><strong>This message is shareable.</strong></p>
+      </div>
+    {% else %}
+      <div class="mt-3">
+        <p><strong>This message is not shareable.</strong></p>
+      </div>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-4">Back to Dashboard</a>
+  </div>
+{% endblock %}
