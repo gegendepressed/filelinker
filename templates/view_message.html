@@ -8,8 +8,10 @@
     
     {% if message.image %}
       <div class="mt-3">
-        <h5>Image:</h5>
-        <img src="{{ message.image }}" alt="Message Image" class="img-fluid">
+        <h5>Images:</h5>
+        {% for img_url in message.image.split(',') %}
+          <img src="{{ img_url|replace('{','')|replace('}','') }}" alt="Message Image" class="img-fluid mb-3">
+        {% endfor %}
       </div>
     {% endif %}
 
@@ -18,7 +20,7 @@
       <p>{{ message.message }}</p>
     </div>
 
-    {% if message.shareable_msg%}
+    {% if message.shareable_msg %}
       <div class="mt-3">
         <p><strong>This message is shareable.</strong></p>
       </div>

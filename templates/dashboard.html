@@ -6,13 +6,13 @@
 
     <div class="mt-4">
       {% if files.items %}
-        <h3> Files and Writeups</h3>
+        <h3>Files</h3>
         <ul class="list-group">
           {% for file in files.items %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
+                <p><strong>Title:</strong> <a href="{{ url_for('view_files', file_id=file.id) }}">{{ file.title }}</a></p>
                 <p><strong>Shortened URL:</strong> <a href="{{ file.shortened_url }}" target="_blank">{{ file.shortened_url }}</a></p>
-                <p><strong>Uploaded on:</strong> {{ file.timestamp|date }}</p>
               </div>
               <form method="POST" action="{{ url_for('delete_file', item_id=file.id) }}" class="ml-4">
                 <button type="submit" class="btn btn-danger btn-sm">
@@ -26,24 +26,30 @@
         <h3>You haven't uploaded any files yet.</h3>
       {% endif %}
 
-      <h3 class="mt-4">Messages</h3>
-      <ul class="list-group">
-        {% for message in messages.items %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <p><strong>Title:</strong> <a href="{{ url_for('view_message', message_id=message.id) }}">{{ message.title }}</a></p>
-              <p><strong>Content:</strong> {{ message.message[:40] }}{% if message.message|length > 40 %}...{% endif %}</p>
-            </div>
-            <form method="POST" action="{{ url_for('delete_file', item_id=message.id) }}" class="ml-4">
-              <button type="submit" class="btn btn-danger btn-sm">
-                <img src="{{ url_for('static', filename='images/delete.svg') }}" style="width: 20px; height: 20px;">
-              </button>
-            </form>
-          </li>
-        {% endfor %}
-      </ul>
+  <br> <br>
 
-      <!-- Pagination Controls -->
+      {% if messages.items %}
+        <h3 class="mt-4">Writeups</h3>
+        <ul class="list-group">
+          {% for message in messages.items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <p><strong>Title:</strong> <a href="{{ url_for('view_message', message_id=message.id) }}">{{ message.title }}</a></p>
+                <p><strong>Content:</strong> {{ message.message[:40] }}{% if message.message|length > 40 %}...{% endif %}</p>
+              </div>
+              <form method="POST" action="{{ url_for('delete_file', item_id=message.id) }}" class="ml-4">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  <img src="{{ url_for('static', filename='images/delete.svg') }}" style="width: 20px; height: 20px;">
+                </button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <h3>You haven't uploaded any writeups yet.</h3>
+      {% endif %}
+
+      <!-- Pagination Controls for Files -->
       <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
           {% if files.has_prev %}
@@ -72,11 +78,11 @@
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
-        <ul class="alert alert-warning">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
+      <ul class="alert alert-warning">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
     {% endif %}
   {% endwith %}
 {% endblock %}

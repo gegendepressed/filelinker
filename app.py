@@ -1,5 +1,5 @@
 import time
-from flask import Flask, flash, render_template, redirect, request, url_for
+from flask import Flask, flash, render_template, redirect, request, url_for,session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 import hashlib
 from werkzeug.utils import secure_filename
@@ -128,7 +128,7 @@ def message():
         db.session.commit()
         
         flash("Message posted successfully!", "success")
-        return redirect(url_for("message"))
+        return redirect(url_for("dashboard"))
 
     return render_template('message.html', form=form, image=image)
 
@@ -211,6 +211,7 @@ def uploadgofile():
                 timestamp=timestamp,
                 user_id=current_user.username
             )
+            
             db.session.add(file_url)
             db.session.commit()
 
@@ -261,7 +262,16 @@ def view_message(message_id):
 
     return render_template('view_message.html', message=message)
 
-@app.route('/delete/<int:item_id>', methods=['POST'])
+@app.route('/files/<int:file_id>')
+def view_files(file_id):
+    file = db.session.execute(db.select(FileURL).where(FileURL.id == file_id)).scalar_one_or_none()  # Add parentheses here
+    if not file:
+        flash("File not found.", "danger")
+        return redirect(url_for('dashboard'))
+
+    return render_template('view_files.html', file=file)
+
+@app.route('/delete/<int:item_id>', methods=['GET','POST'])
 @login_required
 def delete_file(item_id):
     file = db.session.execute(db.select(FileURL).where(FileURL.id == item_id, FileURL.user_id == current_user.username)).scalar_one_or_none()
@@ -273,19 +283,16 @@ def delete_file(item_id):
 
     if file:
         db.session.delete(file)
+        db.session.commit()
 
     if message:
         if message.image:
             image_id = message.image.split("/")[-1]
             delete_image(image_id)
         db.session.delete(message)
-
-
         db.session.commit()
     flash("File/Message deleted successfully.", "success")
     return redirect(url_for('dashboard'))
-
-
 
 @app.route('/logout')
 def logout():
@@ -294,5 +301,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8000))
     app.run(host='0.0.0.0', port=port)

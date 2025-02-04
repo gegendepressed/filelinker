@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import validators, StringField, PasswordField, SubmitField, FileField,BooleanField, TextAreaField
+from wtforms import validators, StringField, PasswordField, SubmitField, FileField,BooleanField, TextAreaField, MultipleFileField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from flask_wtf.file import FileField,FileAllowed,FileSize
 
@@ -29,7 +29,7 @@ class UploadForm(FlaskForm):
 class MessageForm(FlaskForm):
     title = StringField("Title",validators=[DataRequired(),Length(max=100)])
     message = TextAreaField("Message", validators=[DataRequired(), Length(max=1000)])
-    image = FileField("Attach Image (Optional)",validators=[validators.Optional(),
+    image = MultipleFileField("Attach Image (Optional)",validators=[validators.Optional(),
                                         FileAllowed(['jpg', 'gif', 'jpeg', 'png'], 'Please choose jpg, png or gif!'),
                                         FileSize(max_size=2*1024*1024, message="File must be under 2MB")
                                         ])

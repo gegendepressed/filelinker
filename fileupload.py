@@ -2,7 +2,7 @@ import cloudinary
 from cloudinary import CloudinaryImage
 import cloudinary.uploader
 import cloudinary.api
-import os
+import os,uuid
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,19 +13,24 @@ cloudinary.config(
 )
 
 
-def upload_image(file_object, filename):
-    if len(file_object)>5:
-        return {"error": "You can only upload up to 5 images at a time."}
+def upload_image(file_objects, filenames):
+    if len(file_objects) > 5:
+        raise ValueError("You can only upload up to 5 images.")
     
-    image_urls=[]
-    cloudinary.uploader.upload(file_object,
-                               public_id=filename,
-                               unique_filename=False,
-                               overwrite=True)
-    src_url = CloudinaryImage(filename).build_url()
-    image_urls.append(src_url)
-    return src_url
+    uploaded_urls = []
 
+    for file_object in file_objects:
+        unique_filename = str(uuid.uuid4())  # Generate a random unique filename
+        
+        response = cloudinary.uploader.upload(file_object,
+                                              public_id=unique_filename,
+                                              unique_filename=False,
+                                              overwrite=False)  # Ensure no overwriting
+        src_url = CloudinaryImage(unique_filename).build_url()
+        uploaded_urls.append(src_url)
 
-def delete_image(filename):
-    cloudinary.uploader.destroy(filename)
+    return uploaded_urls
+
+def delete_image(filenames):
+    for filename in filenames:
+     cloudinary.uploader.destroy(filename, invalidate=True)
