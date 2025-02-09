@@ -55,10 +55,10 @@ class Message(Base):
     __tablename__ = "message"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(String(256), nullable=False)  # Added title field
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
     message: Mapped[str] = mapped_column(String(1000), nullable=False)
     user_id: Mapped[str] = mapped_column(ForeignKey("user.username"))
-    image: Mapped[Optional[str]] = mapped_column(String(400))
+    image: Mapped[Optional[str]] = mapped_column(String(400), nullable=True)
     timestamp: Mapped[int] = mapped_column(BigInteger, nullable=False)
     shareable_msg: Mapped[bool] = mapped_column(Boolean, default=False)
     user: Mapped["User"] = relationship("User", back_populates="message")

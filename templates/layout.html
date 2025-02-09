@@ -7,12 +7,12 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body class="{% if current_theme == 'light' %}light-mode{% else %}dark-mode{% endif %}">
-    <nav id="navbar" class="navbar navbar-expand-lg navbar-light">
+<body class="dark-mode">
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('home') }}">
                 <img id="brandLogo" 
-                     src="{{ url_for('static', filename='images/brand-light.svg') }}" 
+                     src="{{ url_for('static', filename='images/brand-dark.svg') }}" 
                      alt="FileLinker Logo" 
                      style="width: 35px; margin-right: 5px;"> 
                 FileLinker
@@ -23,18 +23,10 @@
                     <a href="{{ url_for('register') }}">Getting Started!</a>
                     <a href="{{ url_for('login') }}">Login</a>
                     <a href="{{ url_for('upload') }}">Upload File</a>
-                    <button id="toggleMode" class="theme-toggle-btn">
-                        <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
-                        <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
-                    </button>
                 {% else %}
                     <a href="{{ url_for('dashboard') }}">Account</a>
                     <a href="{{ url_for('upload') }}">Upload File</a>
                     <a href="{{ url_for('message') }}">Writeup</a>
-                    <button id="toggleMode" class="theme-toggle-btn">
-                        <img id="sunIcon" src="{{ url_for('static', filename='images/sun.svg') }}" alt="Sun Icon" style="width: 20px; display: none;">
-                        <img id="moonIcon" src="{{ url_for('static', filename='images/moon.svg') }}" alt="Moon Icon" style="width: 20px;">
-                    </button>
                     <a href="{{ url_for('logout') }}">Logout</a>
                 {% endif %}
             </div>

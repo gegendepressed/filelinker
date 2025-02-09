@@ -6,8 +6,8 @@ body {
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
-    background-color: #f3f3e3;
-    color: #272727;
+    background-color: #272727;
+    color: #f3f3e3;
     font-family: Arial, sans-serif;
 }
 
@@ -15,6 +15,7 @@ nav {
     position: relative;
     top: 10px;
     width: 100%;
+    background-color: #272727;
 }
 
 .navbar {
@@ -22,235 +23,50 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #f3f3e3;
+    background-color: #272727;
 }
 
 .navbar a {
     text-decoration: none;
-    color: #272727;
+    color: #f3f3e3;
     font-weight: bold;
     transition: color 0.3s;
     margin: 0 15px;
 }
 
-.theme-toggle-btn {
-    background-color: transparent;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #272727;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.dark-mode {
-    background-color: #272727;
-    color: #f3f3e3;
-}
-
-
-body.dark-mode nav {
-    background-color: #272727;
-}
-
-body.dark-mode .navbar a {
-    color: #f3f3e3;
-}
-
-body.dark-mode .theme-toggle-btn {
-    background-color: #272727;
-    color: #f3f3e3;
-}
-
-body.light-mode .list-group-item {
-    background-color: #f3f3e3;
-    color: #272727;
-    border-color: #272727;
-}
-body.dark-mode .list-group-item {
+.list-group-item {
     background-color: #272727;
     color: #f3f3e3;
     border-color: #f3f3e3;
 }
 
-body.dark-mode .list-group-item a {
+.list-group-item a {
     color: #f3f3e3;
 }
 
-body.light-mode {
-    background-color: #f3f3e3;
-}
-
-body.light-mode .container {
-    background-color: #f3f3e3;
-    color: #272727;
-    border-color: #272727;
-}
-
-body.light-mode .pagination .page-link {
-    background-color: #f3f3e3;
-    color: #272727;
-    border-color: #272727;
-}
-
-body.dark-mode .pagination .page-link {
-    background-color: #272727;
-    color: #f3f3e3;
-    border-color: #f3f3e3;
-}
-
-body.dark-mode .pagination .page-item.disabled .page-link {
+.container {
     background-color: #272727;
     color: #f3f3e3;
 }
 
 h1, h3 {
-    color: #272727;
+    color: #f3f3e3;
     margin-bottom: 20px;
     text-align: center;
 }
 
-body.dark-mode h1, 
-body.dark-mode h3 {
-    color: #f3f3e3;
-}
-
-body.dark-mode .container {
-    background-color: #272727;
-    color: #f3f3e3;
-}
-
-body.light-mode .container {
-    background-color: #f3f3e3;
-    color: #272727;
-}
-
-body.light-mode .form-control {
-    background-color: #f3f3e3;
-    color: #272727;
-    border: 1px solid #272727;
-}
-
-body.light-mode .form-control:focus {
-    background-color: #f3f3e3;
-    border-color: #272727;
-}
-
-body.light-mode .gofilebutton .register-btn {
-    background-color: #f3f3e3;
-    color: #272727;
-    border: 1px solid #272727;
-}
-
-body.dark-mode .form-control {
+.form-control {
     background-color: #272727;
     color: #f3f3e3;
     border: 1px solid #f3f3e3;
 }
 
-body.dark-mode .form-control:focus {
-    background-color: #3a3a3a;
+.form-control:focus {
+    background-color: #272727;
     border-color: #f3f3e3;
-}
-
-body.dark-mode .gofilebutton.register-btn {
-    background-color: #272727;
-    color: #f3f3e3;
-    border: 1px solid #f3f3e3;
-}
-
-body.light-mode .upload-btn {
-    font-weight: bold;
-    color: #272727;
-    text-align: center;
-}
-
-body.light-mode .gofilebutton.upload-btn {
-    background-color: #f3f3e3;
-    color: #272727;
-    border: 1px solid #272727;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.light-mode .gofilebutton.upload-btn:hover {
-    background-color: #272727;
     color: #f3f3e3;
 }
 
-body.light-mode .pingmebutton.upload-btn {
-    background-color: #f3f3e3;
-    color: #272727;
-    border: 1px solid #272727;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.light-mode .pingmebutton.upload-btn:hover {
-    background-color: #272727;
-    color: #f3f3e3;
-}
-
-body.light-mode .pingmebutton.upload-btn {
-    background-color: #f3f3e3;
-    color: #272727;
-    border: 1px solid #272727;
-    cursor: not-allowed;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.light-mode .pingmebutton.upload-btn:disabled {
-    background-color: #f3f3e3;
-    color: #b0b0b0;
-    border: 1px solid #b0b0b0;
-}
-
-body.dark-mode .upload-btn {
-    font-weight: bold;
-    color: #f3f3e3;
-    text-align: center;
-}
-
-body.dark-mode .gofilebutton.upload-btn {
-    background-color: #272727;
-    color: #f3f3e3;
-    border: 1px solid #f3f3e3;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.dark-mode .gofilebutton.upload-btn:hover {
-    background-color: #f3f3e3;
-    color: #272727; 
-}
-
-body.dark-mode .pingmebutton.upload-btn {
-    background-color: #272727;
-    color: #f3f3e3;
-    border: 1px solid #f3f3e3;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.dark-mode .pingmebutton.upload-btn:hover {
-    background-color: #f3f3e3;
-    color: #272727;
-}
-
-body.dark-mode .pingmebutton.upload-btn {
-    background-color: #272727;
-    color: #f3f3e3;
-    border: 1px solid #f3f3e3;
-    cursor: not-allowed;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-body.dark-mode .pingmebutton.upload-btn:disabled {
-    background-color: #272727;
-    color: #b0b0b0;
-    border: 1px solid #b0b0b0;
-}
-
-.theme-toggle-btn{
-    background-color: #f3f3e3;
-    color : #272727
-}
 .gofilebutton.register-btn,
 .gofilebutton.upload-btn,
 .pingmebutton.upload-btn {
@@ -263,27 +79,18 @@ body.dark-mode .pingmebutton.upload-btn:disabled {
 .gofilebutton.register-btn:hover,
 .gofilebutton.upload-btn:hover,
 .pingmebutton.upload-btn:hover {
+    background-color: #f3f3e3;
+    color: #272727;
+    border-color: #272727;
+}
+
+.pagination .page-link {
     background-color: #272727;
     color: #f3f3e3;
     border-color: #f3f3e3;
 }
 
-body.dark-mode .theme-toggle-btn{
+.pagination .page-item.disabled .page-link {
     background-color: #272727;
-    border: 1px solid #272727;
-}
-body.dark-mode .gofilebutton.register-btn,
-body.dark-mode .gofilebutton.upload-btn,
-body.dark-mode .pingmebutton.upload-btn {
-    background-color: #f3f3e3;
-    color: #272727;
-    border: 1px solid #f3f3e3;
-}
-
-body.dark-mode .gofilebutton.register-btn:hover,
-body.dark-mode .gofilebutton.upload-btn:hover,
-body.dark-mode .pingmebutton.upload-btn:hover {
-    background-color: grey;
-    color: #272727;
-    border-color: #272727;
+    color: #f3f3e3;
 }

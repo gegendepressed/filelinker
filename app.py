@@ -107,30 +107,38 @@ def login():
 @login_required
 def message():
     form = MessageForm()
-    image = None
+    images = []
 
     if form.validate_on_submit():
-        if form.image.data:  
-            image = form.image.data
-            randomhex = secrets.token_hex(10)
-            image = upload_image(image, f"{current_user.username}_post_{randomhex}")
+        files = form.image.data or []  # Ensure it's always a list
 
-        message = Message(
+        valid_files = []
+        for file in files:
+            if file and file.filename.strip():
+                valid_files.append(file)
+
+        if valid_files:
+            images = upload_image(valid_files, current_user.username)  
+
+        new_message = Message(
             title=form.title.data,
             message=form.message.data,
             user_id=current_user.username,
-            image=image,
+            image=images if images else None,  
             timestamp=int(time.time()),
             shareable_msg=form.shareable_msg.data
         )
 
-        db.session.add(message)
+        db.session.add(new_message)
         db.session.commit()
-        
+
         flash("Message posted successfully!", "success")
         return redirect(url_for("dashboard"))
 
-    return render_template('message.html', form=form, image=image)
+    return render_template("message.html", form=form)
+
+
+
 
 @app.route('/upload',methods=['GET',"POST"])
 def upload():
@@ -301,5 +309,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

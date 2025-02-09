@@ -14,18 +14,21 @@ cloudinary.config(
 
 
 def upload_image(file_objects, filenames):
+    if not file_objects: 
+        return []
+    
     if len(file_objects) > 5:
         raise ValueError("You can only upload up to 5 images.")
     
     uploaded_urls = []
 
     for file_object in file_objects:
-        unique_filename = str(uuid.uuid4())  # Generate a random unique filename
+        unique_filename = str(uuid.uuid4())
         
         response = cloudinary.uploader.upload(file_object,
                                               public_id=unique_filename,
                                               unique_filename=False,
-                                              overwrite=False)  # Ensure no overwriting
+                                              overwrite=False)
         src_url = CloudinaryImage(unique_filename).build_url()
         uploaded_urls.append(src_url)
 
