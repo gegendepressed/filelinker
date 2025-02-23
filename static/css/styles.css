@@ -1,3 +1,5 @@
+@import url(https://db.onlinewebfonts.com/c/c066fdd8248e28e98522d1b408e5adfa?family=Gmarket+Sans+TTF+Bold); 
+
 body {
     margin: 0;
     padding: 0;
@@ -55,6 +57,11 @@ h1, h3 {
     text-align: center;
 }
 
+.preserve-line-breaks {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 .form-control {
     background-color: #272727;
     color: #f3f3e3;
@@ -94,3 +101,22 @@ h1, h3 {
     background-color: #272727;
     color: #f3f3e3;
 }
+
+.alert {
+    background-color: #f3f3e3;
+    color: #272727;
+    border: 1px solid #272727;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.alert li {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+
+
+
+

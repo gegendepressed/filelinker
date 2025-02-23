@@ -110,7 +110,7 @@ def message():
     images = []
 
     if form.validate_on_submit():
-        files = form.image.data or []  # Ensure it's always a list
+        files = form.image.data or []
 
         valid_files = []
         for file in files:
@@ -138,13 +138,7 @@ def message():
     return render_template("message.html", form=form)
 
 
-
-
-@app.route('/upload',methods=['GET',"POST"])
-def upload():
-    return render_template('upload.html')
-
-@app.route('/gofile', methods=['GET', 'POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def uploadgofile():
     form = UploadForm()
     shortened_url = None
@@ -268,7 +262,7 @@ def view_message(message_id):
         flash("You cannot view this message as it is not shared by the user.", "danger")
         return redirect(url_for('login'))
 
-    return render_template('view_message.html', message=message)
+    return render_template('view_message.html', message=message, delete_url='delete_file', item_id=message.id  )
 
 @app.route('/files/<int:file_id>')
 def view_files(file_id):
@@ -277,7 +271,7 @@ def view_files(file_id):
         flash("File not found.", "danger")
         return redirect(url_for('dashboard'))
 
-    return render_template('view_files.html', file=file)
+    return render_template('view_files.html', file=file, delete_url='delete_file', item_id=file.id )
 
 @app.route('/delete/<int:item_id>', methods=['GET','POST'])
 @login_required
@@ -306,7 +300,7 @@ def delete_file(item_id):
 def logout():
     logout_user()
     flash('You have been logged out.', 'info')
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
