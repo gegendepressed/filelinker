@@ -1,13 +1,9 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<br>
-<br>
-    <div class="text-center" style="font-family: 'Gmarket Sans TTF Bold', sans-serif;">
-        <h1 style="font-size: 75px">Welcome to FileLinker</h1>
-        <p style="font-size: 25px">Share files and writeups seemlessly.</p>
-        <br>
-        <br>
-        <a href="{{ url_for('register') }}" class="btn btn-light" style="font-size: 15px">Get Started</a>
-    </div>
+<div class="text-center welcome-section">
+    <h1>Welcome to FileLinker</h1>
+    <p>Share files and writeups seamlessly.</p>
+    <a href="{{ url_for('register') }}" class="btn btn-light get-started-btn"> Try it Now !</a>
+</div>
 {% endblock %}
