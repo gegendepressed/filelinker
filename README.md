@@ -7,7 +7,7 @@ So, was I.
 
 This is FileLinker. You can upload the files and images, write messages and share them to yourself or your friends.
 
-They are also accessible to you through ahttps://postimg.cc/62WW00qg/ecdff683 personal dashboard and you decide which files you want to share and which you don't. :)
+They are also accessible to you through a personal dashboard and you decide which files you want to share and which you don't. :)
 
 
 ## Deployment
